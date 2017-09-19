@@ -1,0 +1,4 @@
+module CubicBezierPicker [system] {
+    header "CubicBezierPicker/CubicBezierPicker.h"
+    export *
+}

@@ -6,11 +6,11 @@
 //
 //
 
-#import "ViewController.h"
+#import "CubicBezierViewController.h"
 #import <QuartzCore/CoreAnimation.h>
 #import "BezierThumbnailsPainter.h"
 
-@interface ViewController()
+@interface CubicBezierViewController()
 
 @property (strong) RoundButton *roundButton1;
 @property (strong) RoundButton *roundButton2;
@@ -35,7 +35,7 @@
 
 @end
 
-@implementation ViewController
+@implementation CubicBezierViewController
 
 #pragma mark -
 
@@ -151,22 +151,22 @@
 }
 
 -(void)mouseDown:(NSEvent *)theEvent{
-    if (NSPointInRect(theEvent.locationInWindow, self.roundButton1.frame)) {
+    if (NSPointInRect([self getPoint:theEvent], self.roundButton1.frame)) {
         // 如果点中第一个点
         self.roundButton1Down = YES;
-    }else if(NSPointInRect(theEvent.locationInWindow, self.roundButton2.frame)){
+    }else if(NSPointInRect([self getPoint:theEvent], self.roundButton2.frame)){
         // 如果点中的第二个点
         self.roundButton2Down = YES;
-    }else if(NSPointInRect(theEvent.locationInWindow, self.bezierBoardView.frame)){
+    }else if(NSPointInRect([self getPoint:theEvent], self.bezierBoardView.frame)){
         // 如果点的空白地方（画板内）
         self.blankTouchDown = YES;
     }
-    NSLog(@"mouseDown:%@",NSStringFromPoint(theEvent.locationInWindow));
+//    NSLog(@"mouseDown:%@",NSStringFromPoint([self getPoint:theEvent]));
 }
 
 -(void)mouseDragged:(NSEvent *)theEvent{
     [self updateBezierBoard:theEvent];
-    NSLog(@"mouseDragged");
+//    NSLog(@"mouseDragged");
 }
 
 -(void)mouseUp:(NSEvent *)theEvent{
@@ -177,21 +177,25 @@
     self.roundButton2Down = NO;
     self.blankTouchDown = NO;
     
-    NSLog(@"mouseUp");
+//    NSLog(@"mouseUp");
+}
+
+- (CGPoint)getPoint:(NSEvent *)event {
+    return [self.view convertPoint:event.locationInWindow fromView:nil];
 }
 
 -(void)mouseMoved:(NSEvent *)event {
-    CGPoint bezierPoint = [self bezierPoint:event.locationInWindow];
+    CGPoint bezierPoint = [self bezierPoint:[self getPoint:event]];
     [self updateBezierBoardLabels:bezierPoint];
 }
 
 - (void)updateBezierBoard:(NSEvent *)theEvent {
     // 贝塞尔曲线点
-    CGPoint bezierPoint = [self bezierPoint:theEvent.locationInWindow];
+    CGPoint bezierPoint = [self bezierPoint:[self getPoint:theEvent]];
     
     // 计算出 圆点 Center
-    CGPoint roundButtonCenter = CGPointMake(theEvent.locationInWindow.x - RoundButtonDiameter / 2.0, theEvent.locationInWindow.y - RoundButtonDiameter / 2.0);
-    CGPoint roundButtonCenterForBoard = [self.view convertPoint:theEvent.locationInWindow toView:self.bezierBoardView];
+    CGPoint roundButtonCenter = CGPointMake([self getPoint:theEvent].x - RoundButtonDiameter / 2.0, [self getPoint:theEvent].y - RoundButtonDiameter / 2.0);
+    CGPoint roundButtonCenterForBoard = [self.view convertPoint:[self getPoint:theEvent] toView:self.bezierBoardView];
     
     // 边界判断
     if (bezierPoint.x < 0) {
@@ -239,6 +243,8 @@
     
     [self.view setNeedsDisplay:YES];
     [self updateBezierThumbnailsAll:NO];
+    
+    [self.bezierBoardView setNeedsDisplay:YES];
 }
 
 - (IBAction)goAnimation:(id)sender{
