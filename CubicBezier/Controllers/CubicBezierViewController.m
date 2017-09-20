@@ -245,6 +245,7 @@
     [self updateBezierThumbnailsAll:NO];
     
     [self.bezierBoardView setNeedsDisplay:YES];
+    self.update(self.bezierDataPoint1, self.bezierDataPoint2);
 }
 
 - (IBAction)goAnimation:(id)sender{

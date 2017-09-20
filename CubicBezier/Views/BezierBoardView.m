@@ -43,7 +43,6 @@
     [line1 lineToPoint:self.point1];
     [[NSColor grayColor] set];
     [line1 stroke];
-    NSLog(@"line1 stroke");
     
     // Line2
     NSBezierPath *line2 = [NSBezierPath bezierPath];
