@@ -24,7 +24,9 @@
 @property (weak) IBOutlet NSTextField *bezierBoardLeftTextField;
 @property (weak) IBOutlet NSTextField *speedTextField;
 
+
 @property (nonatomic, copy) void (^update)(CGPoint, CGPoint);
+- (void)setup:(CGPoint)p1 p2:(CGPoint)p2;
 
 - (IBAction)goAnimation:(id)sender;
 

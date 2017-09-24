@@ -60,10 +60,8 @@
     return point;
 }
 
-
 - (void)viewDidLoad {
     [super viewDidLoad];
-    
     // 画板左边的文本框旋转90度
     self.bezierBoardLeftTextField.frameRotation = 90;
     
