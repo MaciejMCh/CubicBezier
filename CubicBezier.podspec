@@ -6,7 +6,7 @@ Pod::Spec.new do |spec|
   spec.authors      = { 'Maciej Chmielewski' => 'maciejmch@gmail.com' }
   spec.summary      = 'guitar dsp kit'
   spec.source       = { :git => 'https://github.com/maciejmch/guitardsp.git' }
-  spec.osx.deployment_target  = '10.8'
+  spec.osx.deployment_target  = '10.12'
   spec.source_files = 'CubicBezier/Controllers/*', 'CubicBezier/Models/*', 'CubicBezier/Utils/*', 'CubicBezier/Views/**/*'
   spec.resources    = 'CubicBezier/CubicBezier.storyboard'
   spec.requires_arc = true
