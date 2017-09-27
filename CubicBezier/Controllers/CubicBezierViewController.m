@@ -33,9 +33,41 @@
 
 @property (strong) NSTrackingArea *trackingArea;
 
+@property (nonatomic, strong) RoundButton *rightZero;
+
 @end
 
 @implementation CubicBezierViewController
+
+- (void)viewDidLayout {
+    [super viewDidLayout];
+    [self setup:self.bezierDataPoint1 p2:self.bezierDataPoint2];
+    
+    CGSize pointSize = self.roundButton1.frame.size;
+    CGRect frame = self.rightZero.frame;
+    frame.origin = CGPointMake(self.view.frame.size.width - pointSize.width / 2,
+                               self.view.frame.size.height - pointSize.height / 2);
+    self.rightZero.frame = frame;
+}
+
+- (void)setup:(CGPoint)p1 p2:(CGPoint)p2 {
+    self.bezierDataPoint1 = p1;
+    self.bezierDataPoint2 = p2;
+    
+    CGSize pointSize = self.roundButton1.frame.size;
+    CGSize frameSize = self.view.frame.size;
+    
+    self.roundButton1.frame = CGRectMake(p1.x * frameSize.width - pointSize.width / 2,
+                                         p1.y * frameSize.height - pointSize.height / 2,
+                                         pointSize.width, pointSize.height);
+    self.roundButton2.frame = CGRectMake(p2.x * frameSize.width - pointSize.width / 2,
+                                         p2.y * frameSize.height - pointSize.height / 2,
+                                         pointSize.width, pointSize.height);
+    
+    self.bezierBoardView.point1 = CGPointMake(p1.x * frameSize.width, p1.y * frameSize.height);
+    self.bezierBoardView.point2 = CGPointMake(p2.x * frameSize.width, p2.y * frameSize.height);
+    [self.bezierBoardView setNeedsDisplay:YES];
+}
 
 #pragma mark -
 
@@ -46,8 +78,8 @@
 
 /// 坐标转换：转换成相对画板的坐标
 - (CGPoint)boardPoint:(CGPoint)p{
-    return CGPointMake(self.bezierBoardView.frame.origin.x + p.x * 200.0,
-                       self.bezierBoardView.frame.origin.y + p.y * 200.0);
+    return CGPointMake(self.bezierBoardView.frame.origin.x + p.x * self.view.frame.size.width,
+                       self.bezierBoardView.frame.origin.y + p.y * self.view.frame.size.height);
 }
 
 /**
@@ -78,11 +110,11 @@
     
     // 顶点 （左下&右上）
     RoundButton *leftZero = [[RoundButton alloc] initWithFrame:NSMakeRect(self.bezierBoardView.frame.origin.x - RoundButtonDiameter / 2.0, self.bezierBoardView.frame.origin.y - RoundButtonDiameter / 2.0, RoundButtonDiameter, RoundButtonDiameter)];
-    RoundButton *rightZero = [[RoundButton alloc] initWithFrame:NSMakeRect(self.bezierBoardView.frame.origin.x - RoundButtonDiameter / 2.0 + self.bezierBoardView.frame.size.width, self.bezierBoardView.frame.origin.y - RoundButtonDiameter / 2.0 + self.bezierBoardView.frame.size.height, RoundButtonDiameter, RoundButtonDiameter)];
+    self.rightZero = [[RoundButton alloc] initWithFrame:NSMakeRect(self.bezierBoardView.frame.origin.x - RoundButtonDiameter / 2.0 + self.bezierBoardView.frame.size.width, self.bezierBoardView.frame.origin.y - RoundButtonDiameter / 2.0 + self.bezierBoardView.frame.size.height, RoundButtonDiameter, RoundButtonDiameter)];
     leftZero.showBorder = YES;
-    rightZero.showBorder = YES;
+    self.rightZero.showBorder = YES;
     [self.view addSubview:leftZero];
-    [self.view addSubview:rightZero];
+    [self.view addSubview:self.rightZero];
     
     // 动态点
     CGPoint point1 = [self boardPoint:self.bezierDataPoint1];
@@ -243,7 +275,10 @@
     [self updateBezierThumbnailsAll:NO];
     
     [self.bezierBoardView setNeedsDisplay:YES];
-    self.update(self.bezierDataPoint1, self.bezierDataPoint2);
+    
+    if (self.update) {
+        self.update(self.bezierDataPoint1, self.bezierDataPoint2);
+    }
 }
 
 - (IBAction)goAnimation:(id)sender{
